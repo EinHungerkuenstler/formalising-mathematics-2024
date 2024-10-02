@@ -33,9 +33,32 @@ open Set
 
 def atTop (L : Type) [LinearOrder L] (e : L) : Filter L where
   sets := {X : Set L | ∃ x : L, ∀ y, x ≤ y → y ∈ X}
-  univ_sets := sorry
-  sets_of_superset := sorry
-  inter_sets := sorry
+  univ_sets := by
+  {
+    use e
+    intro y _
+    trivial
+  }
+  sets_of_superset := by {
+    intro x y hx hxy
+    cases' hx with l hl
+    use l
+    intro m hm
+    exact hxy (hl m hm)
+  }
+  inter_sets := by
+  {
+    intro x y hx hy
+    cases' hx with l hl
+    cases' hy with m hm
+    use max l m
+    intro t ht
+    constructor
+    · apply hl
+      exact le_of_max_le_left ht
+    · apply hm
+      exact le_of_max_le_right ht
+  }
 /-
 
 ## the cofinite filter
@@ -62,9 +85,23 @@ that you can probably guess them yourself.
 -/
 def cofinite (α : Type) : Filter α where
   sets := {S : Set α | Sᶜ.Finite}
-  univ_sets := sorry
-  sets_of_superset := sorry
-  inter_sets := sorry
+  univ_sets := by {
+    rw [mem_setOf_eq]
+    rw [compl_univ]
+    exact finite_empty
+  }
+  sets_of_superset := by
+  { intro S T hS hST
+    rw[mem_setOf_eq] at *
+    rw [← compl_subset_compl] at hST
+    exact Finite.subset hS hST
+    }
+  inter_sets := by {
+    intro S T hS hT
+    rw[mem_setOf_eq] at *
+    rw [compl_inter]
+    exact Finite.union hS hT
+  }
 
 /-
 
