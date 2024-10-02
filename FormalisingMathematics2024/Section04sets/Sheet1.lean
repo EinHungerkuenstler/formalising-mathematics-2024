@@ -79,18 +79,78 @@ Let's prove some theorems.
 
 -/
 
-example : A ⊆ A := by sorry
+example : A ⊆ A := by
+  intro x hx
+  assumption
 
-example : A ⊆ B → B ⊆ C → A ⊆ C := by sorry
+example : A ⊆ B → B ⊆ C → A ⊆ C := by
+  intro hAB hBC x hx
+  apply hAB at hx -- think about why this works
+  apply hBC at hx
+  exact hx
+--   intro hAB hBC
+--   rw [subset_def] at *
+--   intro s hs
+--   specialize hAB s hs
+--   specialize hBC s hAB
+--   assumption
+-- sorry
 
-example : A ⊆ A ∪ B := by sorry
+example : A ⊆ A ∪ B := by
+  intro x hx
+  left
+  assumption
 
-example : A ∩ B ⊆ A := by sorry
+example : A ∩ B ⊆ A := by
+  -- intro x hx
+  -- cases' hx with h1 h2
+  -- exact h1
+  rintro x ⟨hxA, hxB⟩
+  exact hxA
 
-example : A ⊆ B → A ⊆ C → A ⊆ B ∩ C := by sorry
+example : A ⊆ B → A ⊆ C → A ⊆ B ∩ C := by
+  intro hAB hAC
+  intro x hxA
+  -- rw [mem_inter_iff]
+  -- constructor
+  -- apply hAB at hxA
+  -- assumption
+  -- apply hAC at hxA
+  -- assumption
+  exact ⟨hAB hxA, hAC hxA⟩
 
-example : B ⊆ A → C ⊆ A → B ∪ C ⊆ A := by sorry
+example : B ⊆ A → C ⊆ A → B ∪ C ⊆ A := by
+  -- intro hBA hCA
+  -- intro x hx
+  -- cases' hx with h1 h2
+  -- apply hBA at h1
+  -- exact h1
+  -- apply hCA at h2
+  -- exact h2
+  rintro hBA hCA x (hxB | hxC)
+  · exact hBA hxB
+  · exact hCA hxC
 
-example : A ⊆ B → C ⊆ D → A ∪ C ⊆ B ∪ D := by sorry
+example : A ⊆ B → C ⊆ D → A ∪ C ⊆ B ∪ D :=
+  Set.union_subset_union
+  -- intro hAB hCD
+  -- intro x hx
+  -- cases' hx with h1 h2
+  -- apply hAB at h1
+  -- left
+  -- exact h1
+  -- apply hCD at h2
+  -- right
+  -- exact h2
 
-example : A ⊆ B → C ⊆ D → A ∩ C ⊆ B ∩ D := by sorry
+example : A ⊆ B → C ⊆ D → A ∩ C ⊆ B ∩ D := by
+  -- intro hAB hCD
+  -- intro x hx
+  -- cases' hx with h1 h2
+  -- constructor
+  -- apply hAB at h1
+  -- assumption
+  -- apply hCD at h2
+  -- exact h2
+  rintro hAB hCD x ⟨hxA, hxC⟩
+  exact ⟨hAB hxA, hCD hxC⟩

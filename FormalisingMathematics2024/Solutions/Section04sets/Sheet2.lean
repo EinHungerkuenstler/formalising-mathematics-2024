@@ -42,18 +42,23 @@ variable (X : Type) -- Everything will be a subset of `X`
 
 open Set
 
-example : x ∈ (univ : Set X) := by triv
+example : x ∈ (univ : Set X) := by
+  triv
 
 example : x ∈ (∅ : Set X) → False :=
   id
 
 example : A ⊆ univ := by
+  -- intro x hxA
+  -- triv
   intro x hxA
   triv
 
 example : ∅ ⊆ A := by
-  -- rintro x ⟨⟩ -- solves goal in one line
-  intro x hx
-  change False at hx -- unnecessary line
-  exfalso
-  exact hx
+  -- -- rintro x ⟨⟩ -- solves goal in one line
+  -- intro x hx
+  -- -- change False at hx -- unnecessary line
+  -- exfalso
+  -- exact hx
+  rintro x ⟨hx⟩
+  

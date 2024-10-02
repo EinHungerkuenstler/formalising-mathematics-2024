@@ -28,12 +28,16 @@ If `L` is a complete lattice, and `S : Set L` is a subset of `L`, then its sup i
 
 and you can probably guess the analogous names for `sInf` :-)
 
+'ge_sInf: a ∈ S → a ≥ Inf S'
+'sInf_ge : (∀ (b : L), b ∈ S → b ≥ a) → sInf S ≥ a'
+
 A special case: the empty set has a `sSup` and and an `sInf`, and if you think carefully
 about this then you'll discover that this means that the lattice has a least element and a
 greatest element. These elements are called `⊥` and `⊤` respectively, pronounced `bot`
 and `top`.
 
 `sSup_empty : Sup ∅ = ⊥`
+'sInf_empty : Inf ∅ = ⊤'
 
 See if you can prove basic things about `⊥` and `sSup` just using the API for `sSup`.
 All these results are in the library, but it's a good exercise to prove them from
@@ -46,13 +50,31 @@ variable (L : Type) [CompleteLattice L] (a : L)
 
 -- this is called `bot_le`
 example : ⊥ ≤ a := by
-  sorry
+  rw [← sSup_empty]
+  apply sSup_le
+  intro b hb
+  trivial
 
 -- this is called `le_bot_iff`
 example : a ≤ ⊥ ↔ a = ⊥ := by
-  sorry
+  constructor
+  · intro ha
+    rw [← sSup_empty] at *
+    apply le_antisymm
+    · exact ha
+    · apply sSup_le
+      intro b hb
+      trivial
+  · intro ha
+    rw [← sSup_empty] at *
+    exact Eq.le ha
 
 -- `sSup` is monotone.
 -- this is called sSup_le_sSup
 example (S T : Set L) : S ⊆ T → sSup S ≤ sSup T := by
-  sorry
+  intro hST
+  apply sSup_le
+  intro b hb
+  apply hST at hb
+  apply le_sSup
+  exact hb

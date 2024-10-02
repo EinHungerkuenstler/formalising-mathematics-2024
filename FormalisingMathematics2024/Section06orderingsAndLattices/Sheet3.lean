@@ -23,6 +23,14 @@ this question.
 
 -/
 
+lemma foo (L: Type) [Lattice L] (h: ∀ a b c : L, a ⊔ b ⊓ c = (a ⊔ b) ⊓ (a ⊔ c)) :
+  ∀ a b c : L, a ⊓ (b ⊔ c) = a ⊓ b ⊔ a ⊓ c := by
+  letI : DistribLattice L := { (show Lattice L by infer_instance) with le_sup_inf := fun x y z => by rw [← h] }
+  exact fun a b c => inf_sup_left
+
 example (L : Type) [Lattice L] :
-    (∀ a b c : L, a ⊔ b ⊓ c = (a ⊔ b) ⊓ (a ⊔ c)) ↔ ∀ a b c : L, a ⊓ (b ⊔ c) = a ⊓ b ⊔ a ⊓ c := by
-  sorry
+  (∀ a b c : L, a ⊔ b ⊓ c = (a ⊔ b) ⊓ (a ⊔ c)) ↔ ∀ a b c : L, a ⊓ (b ⊔ c) = a ⊓ b ⊔ a ⊓ c := by
+  constructor
+  · apply foo
+  · apply foo (Lᵒᵈ)
+

@@ -56,10 +56,14 @@ def bijection2 : ℚ ≃ ℚ where
   toFun q := 3 * q + 4
   invFun r := (r - 4) / 3
   left_inv := by
+    intro r
+    dsimp
+    ring
     -- start with `intro r`, then use `dsimp` to tidy up the mess
-    sorry
   right_inv := by
-    sorry
+    intro q
+    dsimp
+    ring
 
 -- Note that these two terms are *not* equal.
 example : bijection1 ≠ bijection2 := by

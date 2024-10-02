@@ -86,5 +86,4 @@ example (X : Type) (k : Type) [Field k] (f g : X →₀ k) (c : k) : X →₀ k 
 -- is nonzero? If you try `by exact?` below you'll get `Finset.empty` (`exact?` is
 -- designed to prove theorems, not find definitions), but we want
 -- to definitely use `f` so try `by exact? using f` and you'll hopefully get the right answer.
-example (X : Type) (k : Type) [Field k] (f : X →₀ k) : Finset X := by
-  sorry
+example (X : Type) (k : Type) [Field k] (f : X →₀ k) : Finset X := f.support

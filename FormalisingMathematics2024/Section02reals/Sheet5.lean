@@ -14,7 +14,29 @@ open Section2sheet3solutions
 
 -- you can maybe do this one now
 theorem tendsTo_neg {a : ℕ → ℝ} {t : ℝ} (ha : TendsTo a t) : TendsTo (fun n ↦ -a n) (-t) := by
-  sorry
+  -- rw [tendsTo_def] at ha
+  -- rw [tendsTo_def]
+  -- intro ε hε
+  -- simp
+  -- have h : ∀ n, |a n - t| = |-a n + t| := by
+  --   intro n
+  --   rw [abs_sub_comm]
+  --   ring_nf
+  -- specialize ha ε hε
+  -- cases' ha with B hB
+  -- use B
+  -- intro n hn
+  -- specialize hB n hn
+  -- rw [h] at hB
+  -- exact hB
+
+  rw [tendsTo_def] at *
+  have h : ∀ n, |a n - t| = |-a n - -t| := by
+    intro n
+    rw [abs_sub_comm]
+    congr 1
+    ring
+  simpa [h] using ha
 
 /-
 `tendsTo_add` is the next challenge. In a few weeks' time I'll
@@ -28,6 +50,7 @@ of the results we proved in sheet 4 will be helpful.
 -/
 /-- If `a(n)` tends to `t` and `b(n)` tends to `u` then `a(n) + b(n)`
 tends to `t + u`. -/
+
 theorem tendsTo_add {a b : ℕ → ℝ} {t u : ℝ} (ha : TendsTo a t) (hb : TendsTo b u) :
     TendsTo (fun n ↦ a n + b n) (t + u) :=
   by
@@ -56,6 +79,6 @@ tends to `t - u`. -/
 theorem tendsTo_sub {a b : ℕ → ℝ} {t u : ℝ} (ha : TendsTo a t) (hb : TendsTo b u) :
     TendsTo (fun n ↦ a n - b n) (t - u) := by
   -- this one follows without too much trouble from earlier results.
-  sorry
+  simpa [sub_eq_add_neg] using tendsTo_add ha (tendsTo_neg hb)
 
 end Section2sheet5

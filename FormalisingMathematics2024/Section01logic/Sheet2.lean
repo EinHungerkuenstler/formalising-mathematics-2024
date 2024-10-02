@@ -28,41 +28,47 @@ if you can understand what's going on.
 variable (P Q R : Prop)
 
 example : True := by
-  sorry
-  done
+  triv
 
 example : True → True := by
-  sorry
-  done
+  intro h
+  exact h
 
 example : False → True := by
-  sorry
-  done
+  intro h
+  triv
 
 example : False → False := by
-  sorry
-  done
+  intro h
+  exact h
 
 example : (True → False) → False := by
-  sorry
-  done
+  intro hTF
+  apply hTF
+  triv
 
 example : False → P := by
-  sorry
-  done
+  intro hTF
+  exfalso
+  exact hTF
 
 example : True → False → True → False → True → False := by
-  sorry
-  done
+  intro hT hF hT hF hT
+  exact hF
 
 example : P → (P → False) → False := by
-  sorry
-  done
+  intro hP hPF
+  apply hPF
+  exact hP
 
 example : (P → False) → P → Q := by
-  sorry
-  done
+  intro hPF hP
+  apply hPF at hP
+  exfalso
+  exact hP
 
 example : (True → False) → P := by
-  sorry
-  done
+  intro hTF
+  exfalso
+  apply hTF
+  triv

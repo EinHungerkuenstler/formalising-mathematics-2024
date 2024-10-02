@@ -38,25 +38,77 @@ for group theory. In Lean we use the notation `f ⁻¹' T` for this pullback.
 
 variable (X Y : Type) (f : X → Y) (S : Set X) (T : Set Y)
 
-example : S ⊆ f ⁻¹' (f '' S) := by sorry
+example : S ⊆ f ⁻¹' (f '' S) := by
+  intro s hs
+  -- simp only [Set.mem_preimage, Set.mem_image]
+  -- use s
+  exact ⟨s, hs, rfl⟩
 
-example : f '' (f ⁻¹' T) ⊆ T := by sorry
+
+example : f '' (f ⁻¹' T) ⊆ T := by
+  -- intro t ht
+  -- cases' ht with x hx
+  -- obtain ⟨h1, h2⟩ := hx
+  -- exact Set.mem_of_eq_of_mem (id h2.symm) h1
+  rintro _ ⟨x, hx, rfl⟩
+  exact hx
+  -- exact Set.image_preimage_subset f T
+
 
 -- `library_search` will do this but see if you can do it yourself.
-example : f '' S ⊆ T ↔ S ⊆ f ⁻¹' T := by sorry
+example : f '' S ⊆ T ↔ S ⊆ f ⁻¹' T := by
+  constructor
+  · intro a
+    simp_all only [Set.image_subset_iff]
+  · intro a
+    simp_all only [Set.image_subset_iff]
+    -- · intro fST
+  --   intro s hs
+  --   simp only [Set.mem_preimage]
+  --   apply fST
+  --   exact Set.mem_image_of_mem f hs
+  -- · intro SIfT
+  --   intro y hy
+  --   cases' hy with x hx
+  --   obtain ⟨hxS, hfxy⟩ := hx
+  --   simp only [Set.mem_preimage] at SIfT
+  --   exact Set.mem_of_eq_of_mem (id hfxy.symm) (SIfT hxS)
+
 
 -- Pushforward and pullback along the identity map don't change anything
 -- pullback is not so hard
-example : id ⁻¹' S = S := by sorry
+example : id ⁻¹' S = S := by
+  rfl
 
 -- pushforward is a little trickier. You might have to `ext x, split`.
-example : id '' S = S := by sorry
+example : id '' S = S := by
+  ext x
+  constructor
+  · rintro ⟨s, hs, rfl⟩
+    exact hs
+  · intro hx
+    use x
+    constructor
+    exact hx
+    triv
 
 -- Now let's try composition.
 variable (Z : Type) (g : Y → Z) (U : Set Z)
 
 -- preimage of preimage is preimage of comp
-example : g ∘ f ⁻¹' U = f ⁻¹' (g ⁻¹' U) := by sorry
+example : g ∘ f ⁻¹' U = f ⁻¹' (g ⁻¹' U) := by
+  exact rfl
+
 
 -- preimage of preimage is preimage of comp
-example : g ∘ f '' S = g '' (f '' S) := by sorry
+example : g ∘ f '' S = g '' (f '' S) := by
+  -- ext z
+  -- constructor
+  -- · rintro ⟨x, hx, rfl⟩
+  --   simp only [Function.comp_apply, Set.mem_image, exists_exists_and_eq_and]
+  --   use x
+  -- · rintro ⟨y, ⟨x, hxS, rfl⟩,rfl⟩
+  --   exact ⟨x, hxS, rfl⟩
+  simp_all only [Function.comp_apply]
+  unhygienic ext
+  simp_all only [Set.mem_image, exists_exists_and_eq_and]

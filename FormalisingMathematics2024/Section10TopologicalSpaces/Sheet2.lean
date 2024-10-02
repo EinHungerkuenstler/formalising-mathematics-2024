@@ -28,7 +28,11 @@ example (X Y : Type) [MetricSpace X] [MetricSpace Y] (f : X → Y) :
 example (X Y Z : Type) [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
     (f : X → Y) (g : Y → Z) (hf : Continuous f) (hg : Continuous g) : Continuous (g ∘ f) := by
   -- can you prove this from first principles? Start with `rw [continuous_def] at *`.
-  sorry
+  rw [continuous_def] at *
+  intro z hz
+  apply hg at hz
+  apply hf at hz
+  exact hz
 
 example (X Y Z : Type) [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
     (f : X → Y) (g : Y → Z) (hf : Continuous f) (hg : Continuous g) : Continuous (g ∘ f) := by

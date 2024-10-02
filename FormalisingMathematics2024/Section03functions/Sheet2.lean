@@ -99,5 +99,5 @@ example : Function.Injective f := by
   all_goals try rfl
   -- 6 goals left
   all_goals cases h -- no cases :-)
-
+  
 end Section3sheet2

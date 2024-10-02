@@ -80,8 +80,7 @@ example : ∑ x : Fin 10, x = 45 := by
   rfl
 
 -- Actually I just tricked you. Can you explain this?
-example : ∑ x : Fin 10, x = 25 := by
-  rfl
+example : ∑ x : Fin 10, x = 25 := by rfl
 
 -- Here's a better proof
 example : ∑ x : Fin 10, x.val = 45 := by

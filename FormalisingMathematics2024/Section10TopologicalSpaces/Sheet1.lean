@@ -57,19 +57,46 @@ splitting into cases in this proof.
 example : TopologicalSpace X where
   IsOpen (s : Set X) := s = ∅ ∨ s = Set.univ -- empty set or whole thing
   isOpen_univ := by
-    sorry -- use `dsimp`
+    dsimp
+    right
+    triv
   isOpen_inter := by
-    sorry -- use `cases'`
+    intro x₁ x₂ hx
+    cases' hx with hx₁ hx₂
+    · intro hx₂
+      cases' hx₂ with hx₂₁ hx₂₂
+      · left
+        rw [hx₁, hx₂₁]
+        simp
+      · left
+        rw [hx₁, hx₂₂]
+        simp
+    · intro hx₂
+      cases' hx₂ with hx₂₁ hx₂₂
+      · left
+        rw [hx₂, hx₂₁]
+        simp
+      · right
+        rw [hx₂, hx₂₂]
+        simp
   isOpen_sUnion := by
-    intro F
-    -- do cases on whether Set.univ ∈ F
-    sorry
+    intro F hF
+    by_cases h : Set.univ ∈ F
+    · right
+      aesop
+    · left
+      have h1 : ∀ s ∈ F, s = ∅ := by
+        by_contra! h2
+        obtain ⟨x, hx1, hx2⟩ := h2
+        specialize hF x hx1
+        aesop
+      exact Set.sUnion_eq_empty.mpr h1
 
 -- `isOpen_empty` is the theorem that in a topological space, the empty set is open.
 -- Can you prove it yourself? Hint: arbitrary unions are open
 
 example (X : Type) [TopologicalSpace X] : IsOpen (∅ : Set X) := by
-  sorry
+  convert isOpen_sUnion (s := ∅) ?_ <;> simp
 
 -- The reals are a topological space. Let's check Lean knows this already
 #synth TopologicalSpace ℝ
@@ -83,13 +110,38 @@ def Real.IsOpen (s : Set ℝ) : Prop :=
 
 -- Now let's prove the axioms
 lemma Real.isOpen_univ : Real.IsOpen (Set.univ : Set ℝ) := by
-  sorry
+  intro x hx
+  use 999
+  norm_num
 
 lemma Real.isOpen_inter (s t : Set ℝ) (hs : IsOpen s) (ht : IsOpen t) : IsOpen (s ∩ t) := by
-  sorry
+  intro x hx
+  obtain ⟨δs, hδs, hs⟩ := hs x (by aesop)
+  obtain ⟨δt, hδt, ht⟩ := ht x (by aesop)
+  use min δs δt, by positivity
+  rintro y ⟨h1, h2⟩
+  constructor
+  · apply hs
+    have foo : min δs δt ≤ δs := min_le_left δs δt
+    constructor <;> linarith
+  · apply ht
+    have foo : min δs δt ≤ δt := min_le_right δs δt
+    constructor <;> linarith
 
 lemma Real.isOpen_sUnion (F : Set (Set ℝ)) (hF : ∀ s ∈ F, IsOpen s) : IsOpen (⋃₀ F) := by
-  sorry
+  intro x hx
+  simp_rw [Set.mem_sUnion] at *
+  rcases hx with ⟨t, htF, hxt⟩
+  obtain ⟨δ, hδpos, h⟩ := hF t htF x hxt
+  use δ, hδpos
+  intro y hy
+  use t
+  constructor
+  · assumption
+  · apply h
+    assumption
+  -- peel h with h1 y hyt
+  -- use t, htF
 
 -- now we put everything together using the notation for making a structure
 example : TopologicalSpace ℝ where

@@ -46,13 +46,34 @@ open Filter Set
 open scoped Filter
 -- for 𝓟 notation
 
-example (S T : Set α) : 𝓟 S ≤ 𝓟 T ↔ S ⊆ T := sorry
+example (S T : Set α) : 𝓟 S ≤ 𝓟 T ↔ S ⊆ T := by
+  constructor
+  · intro h1
+    rw [le_def] at h1
+    rw [← mem_principal]
+    have hT : T ∈ 𝒫 T := mem_principal_self T
+    specialize h1 T hT
+    assumption
+  · intro h2
+    rw [le_def]
+    intro x hx
+    rw [mem_principal] at hx ⊢
+    exact Subset.trans h2 hx
 
 -- Here's another useful lemma about principal filters.
 -- It's called `le_principal_iff` in mathlib but why
 -- not try proving it yourself?
-example (F : Filter α) (S : Set α) : F ≤ 𝓟 S ↔ S ∈ F := sorry
-
+example (F : Filter α) (S : Set α) : F ≤ 𝓟 S ↔ S ∈ F := by
+  constructor
+  · intro hFPS
+    rw [le_def] at hFPS
+    apply hFPS
+    exact mem_principal_self S
+  · intro hSF
+    rw [le_def]
+    intro x hx
+    rw [mem_principal] at hx
+    exact mem_of_superset hSF hx
 /-
 
 ## Filters are a complete lattice
@@ -63,9 +84,19 @@ the intersection of `Fᵢ.sets` is also a filter. Let's check this.
 -/
 def lub {I : Type} (F : I → Filter α) : Filter α where
   sets := {X | ∀ i, X ∈ F i}
-  univ_sets := sorry
-  sets_of_superset := sorry
-  inter_sets := sorry
+  univ_sets := by {
+    intro i
+    exact univ_mem
+  }
+  sets_of_superset := by {
+    intro S T hS hST
+    intro i
+    exact mem_of_superset (hS i) hST
+  }
+  inter_sets := by {
+    intro S T hS hT i
+    exact inter_mem (hS i) (hT i)
+  }
 
 /-
 
@@ -97,10 +128,19 @@ def glb {I : Type} (F : I → Filter α) : Filter α :=
   lub fun G : {G : Filter α | ∀ i, (F i).sets ⊆ G.sets} ↦ G.1
 
 -- it's a lower bound
-example (I : Type) (F : I → Filter α) (i : I) : glb F ≤ F i := sorry
+example (I : Type) (F : I → Filter α) (i : I) : glb F ≤ F i := by
+  rintro S hS ⟨_, hG⟩
+  exact hG i hS
 
 -- it's ≥ all other lower bounds
 example (I : Type) (F : I → Filter α) (G : Filter α) (hG : ∀ i, G ≤ F i) :
-    G ≤ glb F := sorry
+    G ≤ glb F := by
+    intro S hS
+    unfold glb at hS
+    dsimp at hS
+    unfold lub at hS
+    specialize hS ⟨G, _⟩
+    · exact hG
+    · exact hS
 
 end Section12sheet2
