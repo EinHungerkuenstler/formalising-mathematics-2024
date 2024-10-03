@@ -44,10 +44,13 @@ variable (a b : ℝ≥0∞)
 #check a / b
 
 -- is 1 / 0 = 0 or ∞? In ℝ it's 0 but here there's another possibility
-example : (0 : ℝ≥0∞) * ∞ = 0 := sorry
+example : (0 : ℝ≥0∞) * ∞ = 0 := by
+  norm_num
 
-example : (1 : ℝ≥0∞) / 0 = ∞ := sorry
+example : (1 : ℝ≥0∞) / 0 = ∞ := by
+  simp
 
-example (a b c : ℝ≥0∞) : (a + b) * c = a * c + b * c := sorry
+example (a b c : ℝ≥0∞) : (a + b) * c = a * c + b * c := by
+  ring
 
 end Section13Sheet3
